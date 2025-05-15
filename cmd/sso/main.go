@@ -3,6 +3,7 @@ package main
 import (
 	"log/slog"
 	"os"
+	"sso/internal/app"
 	"sso/internal/config"
 )
 
@@ -19,14 +20,15 @@ func main() {
 	log := setupLoger(cfg.Env)
 	log.Info(
 		"starting application",
-		slog.String("env", cfg.Env),
 		slog.Any("cfg", cfg),
-		slog.Int("port", cfg.GRPCConfig.Port),
 	)
-	log.Debug("debug message")
-	log.Error("error message")
-	log.Warn("warn message")
 	// TODO: инициализировать приложение (app)
+	app := app.New(log, cfg.GRPCConfig.Port, cfg.StoragePath, cfg.GRPCConfig.Timeout)
+	err := app.GRPCServer.Run()
+	if err != nil {
+		log.Error(err.Error())
+		panic("init failed")
+	}
 	// TODO: инициализировать сервер gRPC
 
 }
