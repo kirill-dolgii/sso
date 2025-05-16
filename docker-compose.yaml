@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  migrator:
+    volumes:
+      - ./storage:/root/storage
+    build:
+      context: .
+      dockerfile: Dockerfile.migrator
+    command: [
+      "./migrator",
+      "--storage-path=./storage/sso.db",
+      "--migrations-path=./migrations"
+    ]
+    restart: "no"
+
+  sso:
+    volumes:
+      - ./storage:/root/storage
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "50051:50051"
+    depends_on:
+      - migrator
+    command: [
+      "./sso",
+      "--config=./config/local.yaml"
+    ]
