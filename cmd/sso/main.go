@@ -24,7 +24,7 @@ func main() {
 		slog.Any("cfg", cfg),
 	)
 
-	app := app.New(log, cfg.GRPCConfig.Port, cfg.StoragePath, cfg.GRPCConfig.Timeout)
+	app := app.New(log, cfg.GRPCConfig.Port, cfg.StoragePath, cfg.TokenTTL)
 	go app.GRPCServer.MustRun()
 
 	// Graceful shutdown
